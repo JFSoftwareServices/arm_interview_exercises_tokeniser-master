@@ -17,27 +17,31 @@ public class TokenReaderSadPathTest {
 
     @Test(expected = NullPointerException.class)
     public void nullPointerExceptionIsThrownWhenStartMarkerIsNull() throws EndOfStreamException {
-        new TokenReaderImpl().readToken(new StringStream(EMPTY_STRING), null, END_MARKER);
+        new TokenReaderImpl().readToken(new StringStream(format(TEST_STRING, START_MARKER, END_MARKER)),
+                null, END_MARKER);
     }
 
     @Test(expected = NullPointerException.class)
     public void nullPointerExceptionIsThrownWhenEndMarkerIsNull() throws EndOfStreamException {
-        new TokenReaderImpl().readToken(new StringStream(EMPTY_STRING), START_MARKER, null);
+        new TokenReaderImpl().readToken(new StringStream(format(TEST_STRING, START_MARKER, END_MARKER))
+                , START_MARKER, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void illegalArgumentExceptionIsThrownWhenStartMarkerIsEmpty() throws EndOfStreamException {
-        new TokenReaderImpl().readToken(new StringStream(EMPTY_STRING), EMPTY_STRING, END_MARKER);
+        new TokenReaderImpl().readToken(new StringStream(format(TEST_STRING, START_MARKER, END_MARKER))
+                , EMPTY_STRING, END_MARKER);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void illegalArgumentExceptionIsThrownWhenEndMarkerIsEmpty() throws EndOfStreamException {
-        new TokenReaderImpl().readToken(new StringStream(EMPTY_STRING), START_MARKER, EMPTY_STRING);
+        new TokenReaderImpl().readToken(new StringStream(format(TEST_STRING, START_MARKER, END_MARKER))
+                , START_MARKER, EMPTY_STRING);
     }
 
     @Test(expected = EndOfStreamException.class)
     public void endOfStreamExceptionIsThrownWhenStartMarkerFailsToMath() throws EndOfStreamException {
-        new TokenReaderImpl().readToken(new StringStream(format("qjfws%smy string%splthrp", START_MARKER_X, END_MARKER)),
+        new TokenReaderImpl().readToken(new StringStream(format(TEST_STRING, "{XXXX}", END_MARKER)),
                 START_MARKER, END_MARKER);
     }
 }

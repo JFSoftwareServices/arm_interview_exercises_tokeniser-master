@@ -13,9 +13,11 @@ public class TokenReaderImpl implements TokenReader {
         requireNonNullAndNonEmpty(startMarker);
         requireNonNullAndNonEmpty(endMarker);
 
-        String token = "";
+        String token;
         if (startMarkerMatched(stream, startMarker)) {
             token = tokenIfEndMarkerMatched(stream, requireNonNullAndNonEmpty(endMarker));
+        } else {
+            throw new IllegalArgumentException(startMarker);
         }
         return token;
     }
@@ -29,53 +31,61 @@ public class TokenReaderImpl implements TokenReader {
 
     /**
      * Tests if the stream contains the specified startMaker.
-     * If it does, returns true, otherwise return false.
      */
-    private boolean startMarkerMatched(Stream stream, String startMarker) throws EndOfStreamException {
+    private boolean startMarkerMatched(Stream stream, String startMarker) {
         /*
-         * position indicates the position of the matched part of the startMarker. The first matched position is 1
-         * and the next matched position is 2 etc. For example if startMarker is {start} then:
+         * position indicates the position of a matched character of the startMarker.
+         * For example if startMarker is {start} then:
          *
          * {  has position 1
          * s  has position 2
          * t  has position 3
-         * ..    ..       ..
-         * ..    ..       ..
-         * } has position 7
+         * a  has position 4
+         * r  has position 5
+         * t  has position 6
+         * }  has position 7
          *
-         * All other characters have position 0
+         * All other characters have position 0.
          *
          */
         int position = 0;
         for (; ; ) {
+            char character = 0;
             if (position < startMarker.length()) {
-                char character = stream.read();
-                if (charMatched(position, character, startMarker)) {
+                try {
+                    character = stream.read();
+                } catch (EndOfStreamException e) {
+                    return false;
+                }
+                if (charMatched(character, position, startMarker)) {
                     position++;
                 } else {
                     position = 0;
                 }
-            } else return true;
+            } else {
+                return true;
+            }
         }
     }
 
     /**
-     *
+     * Returns the token between the startMarker and endMarker. This method throws an EndOfStreamException if the
+     * endMarker is not present in the stream.
      */
     private String tokenIfEndMarkerMatched(Stream stream, String endMarker) throws EndOfStreamException {
         StringBuilder token = new StringBuilder();
         StringBuilder tmp = null;
-        int pos = 0;
+        int position = 0;
         for (; ; ) {
-            if (pos < endMarker.length()) {
-                char c = stream.read();
+            if (position < endMarker.length()) {
+                char character = stream.read();
                 if (tmp == null)
                     tmp = new StringBuilder();
-                tmp.append(c);
-                if (charMatched(pos, c, endMarker)) {
-                    pos++;
+                tmp.append(character);
+                if (charMatched(character, position, endMarker)) {
+                    position++;
                 } else {
-                    pos = 0;
+                    position = 0;
                     token.append(tmp.toString());
                     tmp = null;
                 }
@@ -86,7 +96,7 @@ public class TokenReaderImpl implements TokenReader {
         return token.toString();
     }
 
-    private boolean charMatched(int pos, char c, String marker) {
-        return pos < marker.length() && marker.charAt(pos) == c;
+    private boolean charMatched(char character, int position, String marker) {
+        return position < marker.length() && marker.charAt(position) == character;
     }
 }

@@ -39,8 +39,8 @@ public class TokenReaderSadPathTest {
                 , START_MARKER, EMPTY_STRING);
     }
 
-    @Test(expected = EndOfStreamException.class)
-    public void endOfStreamExceptionIsThrownWhenStartMarkerFailsToMath() throws EndOfStreamException {
+    @Test(expected = IllegalArgumentException.class)
+    public void illegalArgumentExceptionIsThrownWhenStartMarkerNotMatched() throws EndOfStreamException {
         new TokenReaderImpl().readToken(new StringStream(format(TEST_STRING, "{XXXX}", END_MARKER)),
                 START_MARKER, END_MARKER);
     }

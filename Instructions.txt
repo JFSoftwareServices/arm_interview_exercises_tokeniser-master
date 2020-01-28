@@ -1,0 +1,33 @@
+
+Instructions
+
+Complete the following tasks and e-mail your work back to us when you are entirely satisfied with it. Send us good quality presentation and code, commented and tested as appropriate. We will assume this is the best you can do at this time.
+
+
+
+Exercise 1
+
+Write a presentation on how password-less SSH authentication works. This should be a short explanation of the authentication process, not the steps or commands to get this working. Assume readers are familiar with SSH and focus on explaining password-less authentication. Do not use slides or pictures, just plain text.
+
+
+
+Exercise 2
+
+ Goal
+
+The enclosed com.arm.excercise.tokeniser project contains an interface for a simple reader to parse tokens from a stream of characters. Provide an implementation of the TokenReader interface. The tokenizing must occur as characters are read from the stream. Reading the character stream until its end upfront is not an acceptable strategy.
+ 
+Add JUnit tests to the test directory to demonstrate that your solution works.
+
+
+ Supplied Code
+
+Do not change any of the classes and interfaces supplied in this exercise. StringStream provides a string-based Stream implementation that should be useful when writing unit tests.
+
+Although this exercise comes in the form of an Eclipse Java project, you do not have to use Eclipse to complete it.
+
+
+ Delivery
+
+Add all your code to this project and send it back to us. Ensure you do not introduce external dependencies and that your code compiles and passes unit tests. If you used specific tools to guide implementation or testing, please tell us what they are; they shouldn't however be required to compile or run your code and tests.
+

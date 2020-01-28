@@ -4,7 +4,6 @@ package com.arm.exercise.tokeniser;
 
 import static java.util.Objects.requireNonNull;
 
-
 public class TokenReaderImpl implements TokenReader {
 
     @Override
@@ -31,8 +30,9 @@ public class TokenReaderImpl implements TokenReader {
 
     /**
      * Tests if the stream contains the specified startMaker.
+     * Returns true if the stream contains the specified startMarker, but throws an EndOfStreamException otherwise.
      */
-    private boolean startMarkerMatched(Stream stream, String startMarker) {
+    private boolean startMarkerMatched(Stream stream, String startMarker) throws EndOfStreamException {
         /*
          * position indicates the position of a matched character of the startMarker.
          * For example if startMarker is {start} then:
@@ -50,14 +50,10 @@ public class TokenReaderImpl implements TokenReader {
          */
         int position = 0;
         for (; ; ) {
-            char character = 0;
+            char character;
             if (position < startMarker.length()) {
-                try {
-                    character = stream.read();
-                } catch (EndOfStreamException e) {
-                    return false;
-                }
-                if (charMatched(character, position, startMarker)) {
+                character = stream.read();
+                if (characterMatched(character, position, startMarker)) {
                     position++;
                 } else {
                     position = 0;
@@ -73,21 +69,33 @@ public class TokenReaderImpl implements TokenReader {
      * endMarker is not present in the stream.
      */
     private String tokenIfEndMarkerMatched(Stream stream, String endMarker) throws EndOfStreamException {
-        StringBuilder token = new StringBuilder();
-        StringBuilder tmp = null;
+        /*
+         * position indicates the position of a matched character of the endMarker.
+         * For example if startMarker is {end} then:
+         *
+         * {  has position 1
+         * e  has position 2
+         * n  has position 3
+         * d  has position 4
+         * }  has position 5
+         *
+         * All other characters have position 0.
+         *
+         */
         int position = 0;
+        StringBuilder tmpToken = new StringBuilder();
+        StringBuilder token = new StringBuilder();
         for (; ; ) {
+            char character;
             if (position < endMarker.length()) {
-                char character = stream.read();
-                if (tmp == null)
-                    tmp = new StringBuilder();
-                tmp.append(character);
-                if (charMatched(character, position, endMarker)) {
+                character = stream.read();
+                clearStringBuilder(tmpToken);
+                tmpToken.append(character);
+                if (characterMatched(character, position, endMarker)) {
                     position++;
                 } else {
                     position = 0;
-                    token.append(tmp.toString());
-                    tmp = null;
+                    token.append(tmpToken.toString());
                 }
             } else {
                 break;
@@ -96,7 +104,11 @@ public class TokenReaderImpl implements TokenReader {
         return token.toString();
     }
 
-    private boolean charMatched(char character, int position, String marker) {
+    private void clearStringBuilder(StringBuilder sb) {
+        sb.setLength(0);
+    }
+
+    private boolean characterMatched(char character, int position, String marker) {
         return position < marker.length() && marker.charAt(position) == character;
     }
 }

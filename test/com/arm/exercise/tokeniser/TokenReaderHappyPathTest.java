@@ -13,7 +13,6 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class TokenReaderHappyPathTest {
-
     private String input;
     private String expectedOutput;
 

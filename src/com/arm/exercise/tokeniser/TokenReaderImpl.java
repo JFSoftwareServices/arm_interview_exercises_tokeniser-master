@@ -11,14 +11,8 @@ public class TokenReaderImpl implements TokenReader {
         requireNonNull(stream);
         requireNonNullAndNonEmpty(startMarker);
         requireNonNullAndNonEmpty(endMarker);
-
-        String token;
-        if (startMarkerMatched(stream, startMarker)) {
-            token = tokenIfEndMarkerMatched(stream, requireNonNullAndNonEmpty(endMarker));
-        } else {
-            throw new IllegalArgumentException(startMarker);
-        }
-        return token;
+        findStartMarker(stream, startMarker);
+        return tokenIfEndMarkerFound(stream, requireNonNullAndNonEmpty(endMarker));
     }
 
     private String requireNonNullAndNonEmpty(String marker) {
@@ -29,10 +23,9 @@ public class TokenReaderImpl implements TokenReader {
     }
 
     /**
-     * Tests if the stream contains the specified startMaker.
-     * Returns true if the stream contains the specified startMarker, but throws an EndOfStreamException otherwise.
+     * If the stream doesn't contain the startMarker then this method throws an {@link EndOfStreamException}.
      */
-    private boolean startMarkerMatched(Stream stream, String startMarker) throws EndOfStreamException {
+    private void findStartMarker(Stream stream, String startMarker) throws EndOfStreamException {
         /*
          * position indicates the position of a matched character of the startMarker.
          * For example if startMarker is {start} then:
@@ -59,16 +52,16 @@ public class TokenReaderImpl implements TokenReader {
                     position = 0;
                 }
             } else {
-                return true;
+                break;
             }
         }
     }
 
     /**
-     * Returns the token between the startMarker and endMarker. This method throws an EndOfStreamException if the
+     * Returns the token between the startMarker and endMarker. This method throws an {@link EndOfStreamException} if the
      * endMarker is not present in the stream.
      */
-    private String tokenIfEndMarkerMatched(Stream stream, String endMarker) throws EndOfStreamException {
+    private String tokenIfEndMarkerFound(Stream stream, String endMarker) throws EndOfStreamException {
         /*
          * position indicates the position of a matched character of the endMarker.
          * For example if startMarker is {end} then:

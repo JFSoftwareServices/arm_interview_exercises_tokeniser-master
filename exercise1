@@ -1,0 +1,17 @@
+Exercise 1
+
+Introduction
+============
+SSH supports multiple authentication methods including password-less SSH authentication. Password-less SSH authentication allows a client to authenticate against a remote server without using a password.
+
+This presentation details how password-less SSH authentication works.
+
+How password-less SSH authentication works
+===========================================
+Password-less SSH authentication uses asymmetric encryption. Asymmetric encryption uses two distinct, yet related keys. One key, the public key, is used for encryption and the other, the private key, is used for decryption.
+
+The public key is made freely available to any remote server who might want to send a message to a particular client. The private key, however, is kept secret so that only that particular client knows it.
+
+When the client attempts to authenticate with the server, all of the client’s public keys are sent to the server, the server then checks to see if it already has the clients public key registered. If the server has the clients public key registered then the server generates a challenge, encrypts it using the public key and sends the encrypted challenge message back to the client.
+
+The client decrypts the challenge, using the private key it has, and sends it back to the server. The server establishes that it is the same challenge it sent to the client and so the server authenticates the client.
